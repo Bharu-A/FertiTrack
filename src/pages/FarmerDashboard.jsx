@@ -1,17 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import  useFertilizers  from '../hooks/useFertilizers';
-import { useCart } from '../hooks/useCart';
-import { useWeather } from '../hooks/useWeather';
-import  useNotifications  from '../hooks/useNotifications';
 import  FertilizerCard  from '../components/FertilizerCard';
-import { Cart } from '../components/Cart';
-import Recommendations from '../components/Recommendations';
-import WeatherWidget from '../components/WeatherWidget';
-import FarmerInsights from '../components/FarmerInsights';
 import ChatBox from '../components/ChatBox';
 import { 
-  Search, Filter, Target, ShoppingCart, Sparkles, TrendingUp, MessageCircle, Bell,
+  Search, Filter, Target, TrendingUp, MessageCircle, Bell,
   Wheat, Sprout, Shield, TrendingUp as Growth, Bug, Leaf, Tag, DollarSign,
   Star, ArrowUpDown, X
 } from 'lucide-react';
@@ -26,7 +19,6 @@ export default function FarmerDashboard() {
     maxPrice: '',
     sortBy: ''
   });
-  const [showCart, setShowCart] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('browse');
@@ -34,9 +26,8 @@ export default function FarmerDashboard() {
   
   const { userData } = useAuth();
   const { fertilizers, loading } = useFertilizers(filters);
-  const { cart, addToCart, getTotalPrice } = useCart();
-  const { weather, loading: weatherLoading } = useWeather();
-  const { notifications, unreadCount } = useNotifications();
+
+
 
   // Filter options configuration
   const filterOptions = {
@@ -566,7 +557,7 @@ export default function FarmerDashboard() {
                   <FertilizerCard
                     key={fertilizer.id}
                     fertilizer={fertilizer}
-                    onAddToCart={addToCart}
+                    
                   />
                 ))
               )}
@@ -596,13 +587,7 @@ export default function FarmerDashboard() {
             </div>
           )}
 
-          {activeTab === 'recommendations' && (
-            <Recommendations />
-          )}
 
-          {activeTab === 'insights' && (
-            <FarmerInsights />
-          )}
         </div>
       </div>
 

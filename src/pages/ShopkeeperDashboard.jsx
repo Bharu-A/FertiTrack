@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import AddFertilizerForm from '../components/AddFertilizerForm';
 import InventoryManagement from '../components/InventoryManagement';
-import OrdersManagement from '../components/OrdersManagement';
-import Analytics from '../components/Analytics';
+
 import ShopProfile from '../components/ShopProfile';
-import { Package, ShoppingBag, BarChart3, Plus, Store } from 'lucide-react';
+import { Package, Plus, Store } from 'lucide-react';
 
 export default function ShopkeeperDashboard() {
   const [activeTab, setActiveTab] = useState('inventory');

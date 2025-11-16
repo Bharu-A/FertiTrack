@@ -1,126 +1,121 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useAuth } from '../context/AuthContext';
-import { ShoppingCart, ShoppingBag, Star, MapPin, Sparkles, Phone, Navigation } from 'lucide-react';
+import { ShoppingBag, MapPin, Phone, Navigation } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-export default function FertilizerCard({ fertilizer, onAddToCart, isRecommended = false }) {
-  const { userData } = useAuth();
-  const [imageError, setImageError] = useState(false);
+// INR Format
+const formatINR = (value) => {
+  if (!value) return "₹0";
+  return "₹" + Number(value).toLocaleString("en-IN");
+};
 
-  const handleAddToCart = () => {
-    if (userData?.role !== 'farmer') {
-      toast.error('Only farmers can add to cart');
-      return;
-    }
-    onAddToCart(fertilizer);
-    toast.success('Added to cart!');
-  };
-
+export default function FertilizerCard({ fertilizer, isRecommended = false }) {
   const handleMapClick = (e) => {
     e.stopPropagation();
-    if (fertilizer.shopMapLink) {
-      window.open(fertilizer.shopMapLink, '_blank', 'noopener,noreferrer');
-    } else {
-      toast.error('No map location available for this shop');
-    }
+    fertilizer.shopMapLink
+      ? window.open(fertilizer.shopMapLink, '_blank', 'noopener,noreferrer')
+      : toast.error('No map location available');
   };
 
   const handlePhoneClick = (e) => {
     e.stopPropagation();
-    if (fertilizer.shopPhone) {
-      window.open(`tel:${fertilizer.shopPhone}`);
-    } else {
-      toast.error('No phone number available for this shop');
-    }
+    fertilizer.shopPhone
+      ? window.open(`tel:${fertilizer.shopPhone}`)
+      : toast.error('No phone number available');
   };
 
   return (
-    <div className={`backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl shadow-xl overflow-hidden hover:scale-105 hover:shadow-2xl transition-all duration-300 ${
-      isRecommended ? 'ring-2 ring-emerald-400/50' : ''
-    }`}>
-      {/* Header with Image */}
-      <div className="h-48 bg-gradient-to-br from-white/10 to-white/5 relative overflow-hidden">
-        {fertilizer.imageUrl && !imageError ? (
-          <img
-            src={fertilizer.imageUrl}
-            alt={fertilizer.name}
-            className="w-full h-full object-cover"
-            onError={() => setImageError(true)}
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-white/40">
-            <div className="text-center">
-              <div className="text-4xl mb-2">🌱</div>
-              <p className="text-sm">No Image</p>
-            </div>
+    <div
+      className={`backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl shadow-xl overflow-hidden hover:scale-105 hover:shadow-2xl transition-all duration-300 ${
+        isRecommended ? 'ring-2 ring-emerald-400/50' : ''
+      }`}
+    >
+      {/* Header */}
+      <div className="h-28 bg-gradient-to-br from-emerald-600/40 to-green-400/20 relative flex items-center justify-center">
+        
+        {isRecommended && (
+          <div className="absolute top-3 right-3 bg-gradient-to-r from-emerald-500 to-green-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+            AI Recommended
           </div>
         )}
-        
-        {/* Badges */}
-        <div className="absolute top-3 right-3 flex flex-col space-y-2">
-          {isRecommended && (
-            <div className="bg-gradient-to-r from-emerald-500 to-green-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center space-x-1">
-              <Sparkles size={12} />
-              <span>AI Recommended</span>
-            </div>
-          )}
-          <div className="bg-white/20 backdrop-blur-sm text-white px-2 py-1 rounded-full text-sm">
-            ${fertilizer.price}
-          </div>
+
+        <h2 className="text-white/90 font-semibold text-lg">{fertilizer.name}</h2>
+
+        {/* Price Badge */}
+        <div className="absolute bottom-3 right-3 bg-white/20 backdrop-blur-sm text-white px-2 py-1 rounded-full text-sm">
+          {formatINR(fertilizer.price)}
         </div>
       </div>
 
       {/* Content */}
       <div className="p-5">
-        <h3 className="font-bold text-lg text-white mb-2 line-clamp-1">{fertilizer.name}</h3>
-        
+
+        {/* BRAND TYPE BADGE */}
+        <div className="mb-3">
+          <span
+            className={`px-3 py-1 text-xs font-semibold rounded-full ${
+              fertilizer.type === "branded"
+                ? "bg-blue-600/80 text-white"
+                : "bg-gray-500/60 text-white"
+            }`}
+          >
+            {fertilizer.type || "generic"}
+          </span>
+        </div>
+
+        {/* DESCRIPTION */}
+        {fertilizer.description && (
+          <p className="text-white/80 text-sm mb-4 line-clamp-3">
+            {fertilizer.description}
+          </p>
+        )}
+
         {/* Shop Info */}
         <div className="mb-4 space-y-3">
+
           {/* Shop Name */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center text-white/80 text-sm">
-              <ShoppingBag size={14} className="mr-2" />
-              <span className="font-medium truncate">{fertilizer.shopName || 'Unknown Shop'}</span>
-            </div>
+          <div className="flex items-center text-white/80 text-sm">
+            <ShoppingBag size={14} className="mr-2" />
+            <span className="font-medium truncate">{fertilizer.shopName || 'Unknown Shop'}</span>
           </div>
 
           {/* Shop Address */}
           {fertilizer.shopAddress && (
             <div className="flex items-start space-x-2 text-white/70 text-xs">
-              <MapPin size={12} className="mt-0.5 flex-shrink-0" />
+              <MapPin size={12} className="mt-0.5" />
               <span className="line-clamp-2">{fertilizer.shopAddress}</span>
             </div>
           )}
 
-          {/* Contact and Map Actions */}
+          {/* Phone + Map */}
           <div className="flex items-center justify-between pt-2">
-            {/* Phone */}
+
             {fertilizer.shopPhone && (
               <button
                 onClick={handlePhoneClick}
-                className="flex items-center space-x-1 text-emerald-300 hover:text-emerald-200 text-xs transition-colors group"
+                className="flex items-center space-x-1 text-emerald-300 hover:text-emerald-200 text-xs transition-colors"
               >
                 <Phone size={12} />
                 <span>Call</span>
               </button>
             )}
 
-            {/* Map Link */}
             {fertilizer.shopMapLink && (
               <button
                 onClick={handleMapClick}
-                className="flex items-center space-x-1 text-blue-300 hover:text-blue-200 text-xs transition-colors group"
+                className="flex items-center space-x-1 text-blue-300 hover:text-blue-200 text-xs transition-colors"
               >
                 <Navigation size={12} />
-                <span>View on Map</span>
+                <span>Map</span>
               </button>
             )}
+
           </div>
         </div>
 
         {/* Nutrients */}
         <div className="mb-4">
-          <div className="flex flex-wrap gap-1 mb-2">
+          <div className="flex flex-wrap gap-1">
             {fertilizer.nutrients?.slice(0, 3).map((nutrient, index) => (
               <span
                 key={index}
@@ -136,36 +131,22 @@ export default function FertilizerCard({ fertilizer, onAddToCart, isRecommended 
             )}
           </div>
 
-          <div className="text-white/70 text-sm space-y-1">
-            <div>Suitable for: {fertilizer.suitableCrops?.slice(0, 2).join(', ')}</div>
-            <div>Soil type: {fertilizer.suitableSoil?.join(', ')}</div>
+          {/* Suitable Crops */}
+          <div className="text-white/70 text-sm mt-2">
+            Suitable for: {fertilizer.suitableCrops?.slice(0, 2).join(', ')}
           </div>
         </div>
 
-        {/* Rating and Stock */}
-        <div className="flex justify-between items-center mb-4">
-          <div className="flex items-center space-x-1">
-            <Star size={14} className="text-yellow-300 fill-current" />
-            <span className="text-white/80 text-sm">{fertilizer.rating || '4.2'}</span>
-          </div>
-          <div className={`text-sm font-medium ${
-            fertilizer.quantity < 10 ? 'text-red-300' : 'text-emerald-300'
-          }`}>
+        {/* Stock Indicator */}
+        <div className="flex justify-end">
+          <div
+            className={`text-sm font-medium ${
+              fertilizer.quantity < 10 ? 'text-red-300' : 'text-emerald-300'
+            }`}
+          >
             {fertilizer.quantity < 10 ? 'Low Stock' : 'In Stock'}
           </div>
         </div>
-
-        {/* Add to Cart Button */}
-        {userData?.role === 'farmer' && (
-          <button
-            onClick={handleAddToCart}
-            disabled={fertilizer.quantity === 0}
-            className="w-full bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 disabled:from-gray-500 disabled:to-gray-600 text-white py-3 rounded-xl font-semibold transition-all duration-300 hover:scale-105 disabled:hover:scale-100 flex items-center justify-center space-x-2"
-          >
-            <ShoppingCart size={18} />
-            <span>Add to Cart</span>
-          </button>
-        )}
       </div>
     </div>
   );

@@ -5,20 +5,38 @@ import { collection, addDoc, getDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase/config';
 import { X, Upload } from 'lucide-react';
 import toast from 'react-hot-toast';
+const formatINRInput = (value) => {
+  if (!value) return "";
+
+  const [integer, decimal] = value.split(".");
+
+  const formattedInt = Number(integer).toLocaleString("en-IN");
+
+  return decimal !== undefined
+    ? `₹${formattedInt}.${decimal}`
+    : `₹${formattedInt}`;
+};
+
+
+
+const parseNumber = (value) => {
+  return value.replace(/[^0-9.]/g, "");
+};
 
 export default function AddFertilizerForm({ onClose }) {
   const { currentUser, userData } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    price: '',
-    quantity: '',
-    nutrients: [],
-    suitableCrops: [],
-    suitableSoil: []
-  });
-  const [image, setImage] = useState(null);
+const [formData, setFormData] = useState({
+  name: '',
+  description: '',
+  price: '',
+  quantity: '',
+  stock: '',
+  suitableCrops: '',
+  type: 'generic', // default selection
+});
+
+const [displayPrice, setDisplayPrice] = useState("");
 
   // In your AddFertilizerForm component, modify the submit handler to include shop details:
 const handleSubmit = async (e) => {
@@ -30,30 +48,27 @@ const handleSubmit = async (e) => {
     const shopDoc = await getDoc(doc(db, 'shops', currentUser.uid));
     const shopData = shopDoc.exists() ? shopDoc.data() : {};
 
-    let imageUrl = '';
-    if (image) {
-      const storage = getStorage();
-      const imageRef = ref(storage, `fertilizers/${currentUser.uid}/${Date.now()}_${image.name}`);
-      const snapshot = await uploadBytes(imageRef, image);
-      imageUrl = await getDownloadURL(snapshot.ref);
-    }
+    
 
     await addDoc(collection(db, 'fertilizers'), {
-      ...formData,
-      price: parseFloat(formData.price),
-      quantity: parseInt(formData.quantity),
-      nutrients: formData.nutrients.split(',').map(n => n.trim()),
-      suitableCrops: formData.suitableCrops.split(',').map(c => c.trim()),
-      suitableSoil: formData.suitableSoil.split(',').map(s => s.trim()),
-      imageUrl,
-      shopId: currentUser.uid,
-      // Include shop details automatically
-      shopName: shopData.name || userData.name,
-      shopAddress: shopData.address || '',
-      shopPhone: shopData.phone || '',
-      shopMapLink: shopData.mapLink || '',
-      createdAt: new Date()
-    });
+  ...formData,
+  price: parseFloat(formData.price),
+  quantity: parseInt(formData.quantity),
+  stock: parseInt(formData.stock),
+  type: formData.type, 
+  suitableCrops: formData.suitableCrops
+    .split(',')
+    .map(c => c.trim())
+    .filter(Boolean),
+  
+  shopId: currentUser.uid,
+  shopName: shopData.name || userData.name,
+  shopAddress: shopData.address || '',
+  shopPhone: shopData.phone || '',
+  shopMapLink: shopData.mapLink || '',
+  createdAt: new Date()
+});
+
 
     toast.success('Fertilizer added successfully!');
     onClose();
@@ -97,21 +112,47 @@ const handleSubmit = async (e) => {
               />
             </div>
 
+                      <div>
+  <label className="block text-sm font-medium mb-2">Price (₹)</label>
+
+<input
+  type="text"
+  name="price"
+  required
+  value={displayPrice}
+  onChange={(e) => {
+    let raw = parseNumber(e.target.value); // keeps digits + decimal
+
+    // Prevent too many decimals
+    if ((raw.match(/\./g) || []).length > 1) return;
+
+    setFormData(prev => ({ ...prev, price: raw }));
+    setDisplayPrice(raw ? formatINRInput(raw) : "");
+  }}
+  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700"
+/>
+
+
+</div>
+
+
+
+
             <div>
-              <label className="block text-sm font-medium mb-2">Price ($)</label>
+              <label className="block text-sm font-medium mb-2">Stock</label>
               <input
                 type="number"
-                name="price"
-                step="0.01"
+                name="stock"
                 required
-                value={formData.price}
+                value={formData.stock}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700"
               />
             </div>
 
+
             <div>
-              <label className="block text-sm font-medium mb-2">Quantity</label>
+              <label className="block text-sm font-medium mb-2">Quantity(Kg/L)</label>
               <input
                 type="number"
                 name="quantity"
@@ -122,15 +163,7 @@ const handleSubmit = async (e) => {
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-2">Image</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setImage(e.target.files[0])}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700"
-              />
-            </div>
+            
           </div>
 
           <div>
@@ -145,18 +178,7 @@ const handleSubmit = async (e) => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-2">Nutrients (comma separated)</label>
-              <input
-                type="text"
-                name="nutrients"
-                placeholder="N, P, K, Mg"
-                value={formData.nutrients}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700"
-              />
-            </div>
-
+            
             <div>
               <label className="block text-sm font-medium mb-2">Suitable Crops</label>
               <input
@@ -170,16 +192,36 @@ const handleSubmit = async (e) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Suitable Soil</label>
-              <input
-                type="text"
-                name="suitableSoil"
-                placeholder="clay, sandy, loamy"
-                value={formData.suitableSoil}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700"
-              />
-            </div>
+  <label className="block text-sm font-medium mb-2">Fertilizer Type</label>
+
+  <div className="flex space-x-3">
+    <button
+      type="button"
+      onClick={() => setFormData(prev => ({ ...prev, type: "generic" }))}
+      className={`px-4 py-2 rounded-lg border ${
+        formData.type === "generic"
+          ? "bg-blue-600 text-white border-blue-600"
+          : "bg-gray-200 dark:bg-gray-700 dark:text-white"
+      }`}
+    >
+      Generic
+    </button>
+
+    <button
+      type="button"
+      onClick={() => setFormData(prev => ({ ...prev, type: "branded" }))}
+      className={`px-4 py-2 rounded-lg border ${
+        formData.type === "branded"
+          ? "bg-blue-600 text-white border-blue-600"
+          : "bg-gray-200 dark:bg-gray-700 dark:text-white"
+      }`}
+    >
+      Branded
+    </button>
+  </div>
+</div>
+
+
           </div>
 
           <div className="flex justify-end space-x-4 pt-4">
