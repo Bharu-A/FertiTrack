@@ -25,8 +25,6 @@ export default function ShopkeeperDashboard() {
 
   const tabs = [
     { id: 'inventory', label: 'Inventory', icon: Package },
-    { id: 'orders', label: 'Orders', icon: ShoppingBag },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
     { id: 'profile', label: 'Shop Profile', icon: Store }
   ];
 
@@ -83,8 +81,6 @@ export default function ShopkeeperDashboard() {
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
         {activeTab === 'inventory' && <InventoryManagement />}
-        {activeTab === 'orders' && <OrdersManagement />}
-        {activeTab === 'analytics' && <Analytics />}
         {activeTab === 'profile' && <ShopProfile />}
       </div>
 

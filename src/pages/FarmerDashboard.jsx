@@ -249,15 +249,7 @@ export default function FarmerDashboard() {
             </div>
             
             <div className="flex items-center space-x-4">
-              {/* Notifications */}
-              <button className="relative p-3 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 hover:scale-105 transition-all duration-300 group">
-                <Bell size={20} className="text-white" />
-                {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center animate-pulse">
-                    {unreadCount}
-                  </span>
-                )}
-              </button>
+             
 
               {/* Chat Toggle */}
               <button 
@@ -267,18 +259,7 @@ export default function FarmerDashboard() {
                 <MessageCircle size={20} className="text-white" />
               </button>
 
-              {/* Cart Toggle */}
-              <button
-                onClick={() => setShowCart(true)}
-                className="relative p-3 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 hover:scale-105 transition-all duration-300 group"
-              >
-                <ShoppingCart size={20} className="text-white" />
-                {cart.length > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-emerald-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center animate-bounce">
-                    {cart.length}
-                  </span>
-                )}
-              </button>
+              
             </div>
           </div>
 
@@ -286,8 +267,7 @@ export default function FarmerDashboard() {
           <div className="mt-8 flex space-x-1 bg-white/10 backdrop-blur-sm rounded-2xl p-1 border border-white/20">
             {[
               { id: 'browse', label: 'Browse Products', icon: Search },
-              { id: 'recommendations', label: 'AI Recommendations', icon: Sparkles },
-              { id: 'insights', label: 'My Insights', icon: TrendingUp }
+
             ].map(tab => {
               const Icon = tab.icon;
               return (
@@ -311,10 +291,7 @@ export default function FarmerDashboard() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Weather Widget */}
-        <div className="mb-8">
-          <WeatherWidget weather={weather} loading={weatherLoading} />
-        </div>
+        
 
         {/* Smart Filter Panel */}
         {activeTab === 'browse' && (
@@ -629,8 +606,6 @@ export default function FarmerDashboard() {
         </div>
       </div>
 
-      {/* Modals and Sidebars */}
-      {showCart && <Cart onClose={() => setShowCart(false)} />}
       {showChat && <ChatBox onClose={() => setShowChat(false)} />}
     </div>
   );
