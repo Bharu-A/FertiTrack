@@ -1,7 +1,6 @@
-import React from 'react';
-import { useAuth } from '../context/AuthContext';
-import { ShoppingBag, MapPin, Phone, Navigation } from 'lucide-react';
-import toast from 'react-hot-toast';
+import React from "react";
+import { ShoppingBag, MapPin, Phone, Navigation } from "lucide-react";
+import toast from "react-hot-toast";
 
 // INR Format
 const formatINR = (value) => {
@@ -13,37 +12,44 @@ export default function FertilizerCard({ fertilizer, isRecommended = false }) {
   const handleMapClick = (e) => {
     e.stopPropagation();
     fertilizer.shopMapLink
-      ? window.open(fertilizer.shopMapLink, '_blank', 'noopener,noreferrer')
-      : toast.error('No map location available');
+      ? window.open(fertilizer.shopMapLink, "_blank", "noopener,noreferrer")
+      : toast.error("No map location available");
   };
 
   const handlePhoneClick = (e) => {
     e.stopPropagation();
     fertilizer.shopPhone
       ? window.open(`tel:${fertilizer.shopPhone}`)
-      : toast.error('No phone number available');
+      : toast.error("No phone number available");
   };
 
   return (
     <div
-      className={`backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl shadow-xl overflow-hidden hover:scale-105 hover:shadow-2xl transition-all duration-300 ${
-        isRecommended ? 'ring-2 ring-emerald-400/50' : ''
+      className={`bg-white border border-gray-200 rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden hover:scale-[1.02] ${
+        isRecommended ? "ring-2 ring-blue-300" : ""
       }`}
     >
       {/* Header */}
-      <div className="h-28 bg-gradient-to-br from-emerald-600/40 to-green-400/20 relative flex items-center justify-center">
-        
+      <div className="h-28 bg-gray-100 flex items-center justify-center relative">
+
         {isRecommended && (
-          <div className="absolute top-3 right-3 bg-gradient-to-r from-emerald-500 to-green-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+          <div className="absolute top-3 right-3 bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-medium">
             AI Recommended
           </div>
         )}
 
-        <h2 className="text-white/90 font-semibold text-lg">{fertilizer.name}</h2>
+        <h2 className="text-gray-800 font-semibold text-lg truncate px-4">
+          {fertilizer.name}
+        </h2>
 
         {/* Price Badge */}
-        <div className="absolute bottom-3 right-3 bg-white/20 backdrop-blur-sm text-white px-2 py-1 rounded-full text-sm">
+        <div className="absolute bottom-3 right-3 bg-white border border-gray-300 px-2 py-1 rounded-full text-sm text-gray-700 shadow">
           {formatINR(fertilizer.price)}
+        </div>
+
+        {/* Quantity Badge */}
+        <div className="absolute top-3 left-3 bg-gray-700 text-white px-2 py-1 rounded-full text-xs">
+          {fertilizer.quantity ?? 0} kg
         </div>
       </div>
 
@@ -55,8 +61,8 @@ export default function FertilizerCard({ fertilizer, isRecommended = false }) {
           <span
             className={`px-3 py-1 text-xs font-semibold rounded-full ${
               fertilizer.type === "branded"
-                ? "bg-blue-600/80 text-white"
-                : "bg-gray-500/60 text-white"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-500 text-white"
             }`}
           >
             {fertilizer.type || "generic"}
@@ -65,7 +71,7 @@ export default function FertilizerCard({ fertilizer, isRecommended = false }) {
 
         {/* DESCRIPTION */}
         {fertilizer.description && (
-          <p className="text-white/80 text-sm mb-4 line-clamp-3">
+          <p className="text-gray-600 text-sm mb-4 line-clamp-3">
             {fertilizer.description}
           </p>
         )}
@@ -74,26 +80,35 @@ export default function FertilizerCard({ fertilizer, isRecommended = false }) {
         <div className="mb-4 space-y-3">
 
           {/* Shop Name */}
-          <div className="flex items-center text-white/80 text-sm">
+          <div className="flex items-center text-gray-700 text-sm">
             <ShoppingBag size={14} className="mr-2" />
-            <span className="font-medium truncate">{fertilizer.shopName || 'Unknown Shop'}</span>
+            <span className="font-medium truncate">
+              {fertilizer.shopName || "Unknown Shop"}
+            </span>
           </div>
 
           {/* Shop Address */}
           {fertilizer.shopAddress && (
-            <div className="flex items-start space-x-2 text-white/70 text-xs">
+            <div className="flex items-start space-x-2 text-gray-500 text-xs">
               <MapPin size={12} className="mt-0.5" />
               <span className="line-clamp-2">{fertilizer.shopAddress}</span>
             </div>
           )}
 
-          {/* Phone + Map */}
-          <div className="flex items-center justify-between pt-2">
+          {/* Visible Phone Number */}
+          {fertilizer.shopPhone && (
+            <div className="flex items-center text-gray-700 text-xs">
+              <Phone size={12} className="mr-1" />
+              <span>{fertilizer.shopPhone}</span>
+            </div>
+          )}
 
+          {/* Phone + Map Buttons */}
+          <div className="flex items-center justify-between pt-2">
             {fertilizer.shopPhone && (
               <button
                 onClick={handlePhoneClick}
-                className="flex items-center space-x-1 text-emerald-300 hover:text-emerald-200 text-xs transition-colors"
+                className="flex items-center space-x-1 text-blue-600 hover:text-blue-800 text-xs transition-colors"
               >
                 <Phone size={12} />
                 <span>Call</span>
@@ -103,13 +118,12 @@ export default function FertilizerCard({ fertilizer, isRecommended = false }) {
             {fertilizer.shopMapLink && (
               <button
                 onClick={handleMapClick}
-                className="flex items-center space-x-1 text-blue-300 hover:text-blue-200 text-xs transition-colors"
+                className="flex items-center space-x-1 text-gray-700 hover:text-gray-900 text-xs transition-colors"
               >
                 <Navigation size={12} />
                 <span>Map</span>
               </button>
             )}
-
           </div>
         </div>
 
@@ -119,32 +133,37 @@ export default function FertilizerCard({ fertilizer, isRecommended = false }) {
             {fertilizer.nutrients?.slice(0, 3).map((nutrient, index) => (
               <span
                 key={index}
-                className="bg-white/20 backdrop-blur-sm text-white/90 px-2 py-1 rounded-lg text-xs border border-white/20"
+                className="bg-gray-200 text-gray-700 px-2 py-1 rounded-lg text-xs border border-gray-300"
               >
                 {nutrient}
               </span>
             ))}
+
             {fertilizer.nutrients?.length > 3 && (
-              <span className="bg-white/10 text-white/70 px-2 py-1 rounded-lg text-xs">
+              <span className="bg-gray-200 text-gray-500 px-2 py-1 rounded-lg text-xs">
                 +{fertilizer.nutrients.length - 3} more
               </span>
             )}
           </div>
 
           {/* Suitable Crops */}
-          <div className="text-white/70 text-sm mt-2">
-            Suitable for: {fertilizer.suitableCrops?.slice(0, 2).join(', ')}
+          <div className="text-gray-600 text-sm mt-2">
+            Suitable for:{" "}
+            {fertilizer.suitableCrops?.slice(0, 2).join(", ") || "N/A"}
           </div>
         </div>
 
         {/* Stock Indicator */}
-        <div className="flex justify-end">
+        <div className="flex justify-between items-center">
+          <span className="text-gray-600 text-xs">
+            Stock: {fertilizer.stock ?? 0} packets
+          </span>
           <div
             className={`text-sm font-medium ${
-              fertilizer.quantity < 10 ? 'text-red-300' : 'text-emerald-300'
+              (fertilizer.stock ?? 0) < 10 ? "text-red-500" : "text-green-600"
             }`}
           >
-            {fertilizer.quantity < 10 ? 'Low Stock' : 'In Stock'}
+            {(fertilizer.stock ?? 0) < 10 ? "Low Stock" : "In Stock"}
           </div>
         </div>
       </div>

@@ -215,9 +215,9 @@ export default function FarmerDashboard() {
 
   if (userData?.role !== 'farmer') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-green-300 via-green-400 to-green-500 flex items-center justify-center">
-        <div className="backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl p-8 text-center">
-          <h2 className="text-2xl font-bold text-white mb-4">Access Denied</h2>
+      <div className="min-h-screen bg-white pb-12 text-black">
+        <div className="bg-white border-b border-gray-300 shadow-lg text-black">
+          <h2 className="text-2xl font-bold text-black mb-4">Access Denied</h2>
           <p className="text-white/80">Farmer role required to access this dashboard.</p>
         </div>
       </div>
@@ -225,373 +225,217 @@ export default function FarmerDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-400 via-green-600 to-green-500 pb-12">
-      {/* Header Section */}
-      <div className="backdrop-blur-lg bg-white/10 border-b border-white/20 shadow-xl">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-4 lg:space-y-0">
-            <div>
-              <h1 className="text-4xl font-bold text-white mb-2">
-                Welcome back, {userData?.name}!
-              </h1>
-              <p className="text-white/80 text-lg">
-                Smart farming solutions at your fingertips
-              </p>
-            </div>
-            
-            <div className="flex items-center space-x-4">
-             
-
-              {/* Chat Toggle */}
-              <button 
-                onClick={() => setShowChat(!showChat)}
-                className="p-3 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 hover:scale-105 transition-all duration-300 group"
-              >
-                <MessageCircle size={20} className="text-white" />
-              </button>
-
-              
-            </div>
-          </div>
-
-          {/* Navigation Tabs */}
-          <div className="mt-8 flex space-x-1 bg-white/10 backdrop-blur-sm rounded-2xl p-1 border border-white/20">
-            {[
-              { id: 'browse', label: 'Browse Products', icon: Search },
-
-            ].map(tab => {
-              const Icon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center space-x-2 px-6 py-3 rounded-xl text-sm font-medium transition-all duration-300 ${
-                    activeTab === tab.id
-                      ? 'bg-white/20 text-white shadow-lg'
-                      : 'text-white/70 hover:text-white hover:bg-white/10'
-                  }`}
-                >
-                  <Icon size={18} />
-                  <span>{tab.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
+  <div className="min-h-screen bg-gray-100 pb-12">
+    
+    {/* Header */}
+    <div className="bg-white border-b border-gray-200 shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 py-6">
         
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-4 lg:space-y-0">
 
-        {/* Smart Filter Panel */}
-        {activeTab === 'browse' && (
-          <div className="mb-8 space-y-4">
-            {/* Search Bar and Filter Toggle */}
-            <div className="flex flex-col lg:flex-row gap-4">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-3 text-white/70" size={20} />
-                <input
-                  type="text"
-                  placeholder="Search products, nutrients, brands, shops, crops..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-transparent transition-all duration-300"
-                />
-                
-                {/* Search Suggestions */}
-                {searchSuggestions.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 mt-1 backdrop-blur-lg bg-white/10 border border-white/20 rounded-xl shadow-xl z-10">
-                    {searchSuggestions.map((suggestion, index) => (
-                      <button
-                        key={index}
-                        onClick={() => setSearchTerm(suggestion)}
-                        className="w-full text-left px-4 py-2 text-white hover:bg-white/10 transition-colors first:rounded-t-xl last:rounded-b-xl"
-                      >
-                        {suggestion}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-              
-              <div className="flex gap-3">
-                {/* Filter Toggle Button */}
-                <button
-                  onClick={() => setShowFilters(!showFilters)}
-                  className={`flex items-center space-x-2 px-4 py-3 rounded-xl backdrop-blur-sm border transition-all duration-300 hover:scale-105 ${
-                    showFilters || hasActiveFilters
-                      ? 'bg-emerald-500/80 border-emerald-300/30 text-white'
-                      : 'bg-white/10 border-white/20 text-white/80 hover:text-white'
-                  }`}
-                >
-                  <Filter size={18} />
-                  <span>Filters</span>
-                  {hasActiveFilters && (
-                    <span className="bg-white/20 rounded-full w-5 h-5 text-xs flex items-center justify-center">
-                      ✓
-                    </span>
-                  )}
-                </button>
+          {/* Greeting */}
+          <div>
+            <h1 className="text-3xl font-semibold text-gray-900">
+              Welcome back, {userData?.name}!
+            </h1>
+            <p className="text-gray-500 text-lg">
+              Smart farming solutions at your fingertips
+            </p>
+          </div>
 
-                {/* Clear Filters */}
-                {hasActiveFilters && (
-                  <button
-                    onClick={clearAllFilters}
-                    className="flex items-center space-x-2 px-4 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-xl text-white/80 hover:text-white transition-all duration-300 hover:scale-105"
-                  >
-                    <X size={18} />
-                    <span>Clear</span>
-                  </button>
-                )}
-              </div>
+          {/* Icons
+          <div className="flex items-center space-x-4">
+            <button 
+              onClick={() => setShowChat(!showChat)}
+              className="p-3 rounded-xl bg-gray-100 hover:bg-gray-200 border border-gray-300 transition-all duration-200"
+            >
+              <MessageCircle size={20} className="text-gray-700" />
+            </button>
+          </div> */}
+        </div>
+
+        {/* Navigation Tabs */}
+        <div className="mt-8 flex space-x-1 bg-gray-100 rounded-xl p-1 border border-gray-300">
+          <button
+            onClick={() => setActiveTab("browse")}
+            className={`flex items-center space-x-2 px-6 py-3 rounded-xl text-sm font-medium transition ${
+              activeTab === "browse"
+                ? "bg-white text-gray-900 shadow-sm"
+                : "text-gray-600 hover:bg-gray-200"
+            }`}
+          >
+            <Search size={18} />
+            <span>Browse Products</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    {/* Main Content */}
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      
+      {/* Filters Section */}
+      {activeTab === "browse" && (
+        <div className="mb-8 space-y-4">
+
+          {/* Search Bar + Filter Button */}
+          <div className="flex flex-col lg:flex-row gap-4">
+
+            {/* Search Bar */}
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-3 text-gray-500" size={20} />
+              <input
+                type="text"
+                placeholder="Search fertilizers, nutrients, brands..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-700 placeholder-gray-400 focus:ring-2 focus:ring-gray-300"
+              />
+
+              {/* Suggestions */}
+              {searchSuggestions.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-xl shadow-lg z-10">
+                  {searchSuggestions.map((suggestion, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSearchTerm(suggestion)}
+                      className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 first:rounded-t-xl last:rounded-b-xl"
+                    >
+                      {suggestion}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* Search Results Info */}
-            {searchTerm && (
-              <div className="backdrop-blur-lg bg-white/10 border border-white/20 rounded-xl p-4">
-                <p className="text-white/80 text-sm">
-                  Found <span className="text-emerald-300 font-semibold">{filteredFertilizers.length}</span> products matching "<span className="text-emerald-300">{searchTerm}</span>"
-                  {filteredFertilizers.length > 0 && ' • Showing most relevant first'}
-                </p>
-              </div>
-            )}
+            {/* Filter Button */}
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className="flex items-center space-x-2 px-4 py-3 rounded-xl bg-white border border-gray-300 hover:bg-gray-200 transition"
+            >
+              <Filter size={18} className="text-gray-700" />
+              <span className="text-gray-800">Filters</span>
+            </button>
 
-            {/* Advanced Filters Panel */}
-            {showFilters && (
-              <div className="backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl p-6 shadow-xl">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {/* Crop Selector */}
-                  <div>
-                    <label className="flex items-center space-x-2 text-white/80 text-sm font-medium mb-3">
-                      <Wheat size={16} />
-                      <span>Crop Type</span>
-                    </label>
-                    <select
-                      value={filters.cropType}
-                      onChange={(e) => setFilters(prev => ({ ...prev, cropType: e.target.value }))}
-                      className="w-full px-3 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-300"
-                    >
-                      <option value="" className="bg-gray-800">All Crops</option>
-                      {filterOptions.crops.map(crop => (
-                        <option key={crop.value} value={crop.value} className="bg-gray-800">
-                          {crop.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Purpose Selector */}
-                  <div>
-                    <label className="flex items-center space-x-2 text-white/80 text-sm font-medium mb-3">
-                      <Target size={16} />
-                      <span>Purpose</span>
-                    </label>
-                    <select
-                      value={filters.purpose}
-                      onChange={(e) => setFilters(prev => ({ ...prev, purpose: e.target.value }))}
-                      className="w-full px-3 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-300"
-                    >
-                      <option value="" className="bg-gray-800">All Purposes</option>
-                      {filterOptions.purposes.map(purpose => (
-                        <option key={purpose.value} value={purpose.value} className="bg-gray-800">
-                          {purpose.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Category Selector */}
-                  <div>
-                    <label className="flex items-center space-x-2 text-white/80 text-sm font-medium mb-3">
-                      <Sprout size={16} />
-                      <span>Category</span>
-                    </label>
-                    <select
-                      value={filters.category}
-                      onChange={(e) => setFilters(prev => ({ ...prev, category: e.target.value }))}
-                      className="w-full px-3 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-300"
-                    >
-                      <option value="" className="bg-gray-800">All Categories</option>
-                      {filterOptions.categories.map(category => (
-                        <option key={category.value} value={category.value} className="bg-gray-800">
-                          {category.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Brand Type Selector */}
-                  <div>
-                    <label className="flex items-center space-x-2 text-white/80 text-sm font-medium mb-3">
-                      <Tag size={16} />
-                      <span>Brand Type</span>
-                    </label>
-                    <select
-                      value={filters.brandType}
-                      onChange={(e) => setFilters(prev => ({ ...prev, brandType: e.target.value }))}
-                      className="w-full px-3 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-300"
-                    >
-                      <option value="" className="bg-gray-800">All Brands</option>
-                      {filterOptions.brandTypes.map(brand => (
-                        <option key={brand.value} value={brand.value} className="bg-gray-800">
-                          {brand.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                {/* Price Range and Sort Row */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-                  {/* Price Range */}
-                  <div className="md:col-span-2">
-                    <label className="flex items-center space-x-2 text-white/80 text-sm font-medium mb-3">
-                      <DollarSign size={16} />
-                      <span>Price Range ($)</span>
-                    </label>
-                    <div className="flex space-x-4">
-                      <input
-                        type="number"
-                        placeholder="Min"
-                        value={filters.minPrice}
-                        onChange={(e) => setFilters(prev => ({ ...prev, minPrice: e.target.value }))}
-                        className="flex-1 px-3 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-300"
-                      />
-                      <input
-                        type="number"
-                        placeholder="Max"
-                        value={filters.maxPrice}
-                        onChange={(e) => setFilters(prev => ({ ...prev, maxPrice: e.target.value }))}
-                        className="flex-1 px-3 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-300"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Sort Dropdown */}
-                  <div>
-                    <label className="flex items-center space-x-2 text-white/80 text-sm font-medium mb-3">
-                      <ArrowUpDown size={16} />
-                      <span>Sort By</span>
-                    </label>
-                    <select
-                      value={filters.sortBy}
-                      onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value }))}
-                      className="w-full px-3 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-300"
-                    >
-                      <option value="" className="bg-gray-800">Relevance (Default)</option>
-                      {filterOptions.sortOptions.map(option => (
-                        <option key={option.value} value={option.value} className="bg-gray-800">
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                {/* Active Filters Display */}
-                {hasActiveFilters && (
-                  <div className="mt-6 pt-4 border-t border-white/20">
-                    <p className="text-white/70 text-sm mb-3">Active Filters:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {searchTerm && (
-                        <span className="bg-emerald-500/50 text-white px-3 py-1 rounded-full text-xs flex items-center space-x-1">
-                          <Search size={12} />
-                          <span>Search: "{searchTerm}"</span>
-                        </span>
-                      )}
-                      {filters.cropType && (
-                        <span className="bg-white/20 text-white px-3 py-1 rounded-full text-xs flex items-center space-x-1">
-                          <Wheat size={12} />
-                          <span>Crop: {filterOptions.crops.find(c => c.value === filters.cropType)?.label}</span>
-                        </span>
-                      )}
-                      {filters.purpose && (
-                        <span className="bg-white/20 text-white px-3 py-1 rounded-full text-xs flex items-center space-x-1">
-                          <Target size={12} />
-                          <span>Purpose: {filterOptions.purposes.find(p => p.value === filters.purpose)?.label}</span>
-                        </span>
-                      )}
-                      {filters.category && (
-                        <span className="bg-white/20 text-white px-3 py-1 rounded-full text-xs flex items-center space-x-1">
-                          <Sprout size={12} />
-                          <span>Category: {filterOptions.categories.find(c => c.value === filters.category)?.label}</span>
-                        </span>
-                      )}
-                      {filters.brandType && (
-                        <span className="bg-white/20 text-white px-3 py-1 rounded-full text-xs flex items-center space-x-1">
-                          <Tag size={12} />
-                          <span>Brand: {filterOptions.brandTypes.find(b => b.value === filters.brandType)?.label}</span>
-                        </span>
-                      )}
-                      {(filters.minPrice || filters.maxPrice) && (
-                        <span className="bg-white/20 text-white px-3 py-1 rounded-full text-xs flex items-center space-x-1">
-                          <DollarSign size={12} />
-                          <span>Price: {filters.minPrice || '0'} - {filters.maxPrice || '∞'}</span>
-                        </span>
-                      )}
-                      {filters.sortBy && (
-                        <span className="bg-white/20 text-white px-3 py-1 rounded-full text-xs flex items-center space-x-1">
-                          <ArrowUpDown size={12} />
-                          <span>Sort: {filterOptions.sortOptions.find(s => s.value === filters.sortBy)?.label}</span>
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
+            {/* Clear */}
+            {hasActiveFilters && (
+              <button
+                onClick={clearAllFilters}
+                className="flex items-center space-x-2 px-4 py-3 rounded-xl bg-white border border-gray-300 hover:bg-gray-200 transition"
+              >
+                <X size={18} className="text-gray-700" />
+                <span className="text-gray-800">Clear</span>
+              </button>
             )}
           </div>
-        )}
 
-        {/* Tab Content */}
-        <div className="min-h-[600px]">
-          {activeTab === 'browse' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {loading ? (
-                <div className="col-span-full flex justify-center items-center h-64">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-                </div>
-              ) : (
-                filteredFertilizers.map(fertilizer => (
-                  <FertilizerCard
-                    key={fertilizer.id}
-                    fertilizer={fertilizer}
-                    
-                  />
-                ))
-              )}
+          {/* Active Filters */}
+          {showFilters && (
+            <div className="bg-white border border-gray-300 rounded-2xl p-6 shadow-sm">
+              {/* Filters grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
-              {!loading && filteredFertilizers.length === 0 && (
-                <div className="col-span-full text-center py-12 backdrop-blur-lg bg-white/10 rounded-2xl border border-white/20">
-                  <Filter size={48} className="text-white/40 mx-auto mb-4" />
-                  <p className="text-white/80 text-lg mb-2">
-                    {searchTerm 
-                      ? `No products found for "${searchTerm}"` 
-                      : 'No products found matching your criteria.'
-                    }
-                  </p>
-                  <p className="text-white/60 text-sm">
-                    Try adjusting your search terms or filters.
-                  </p>
-                  {searchTerm && (
-                    <button
-                      onClick={clearAllFilters}
-                      className="mt-4 bg-emerald-500/80 hover:bg-emerald-500 text-white px-6 py-2 rounded-xl transition-all duration-300 hover:scale-105"
-                    >
-                      Clear Search & Filters
-                    </button>
-                  )}
+                {/* Crop Selector */}
+                <div>
+                  <label className="text-gray-700 font-medium mb-2 block">Crop Type</label>
+                  <select
+                    value={filters.cropType}
+                    onChange={(e) => setFilters(prev => ({ ...prev, cropType: e.target.value }))}
+                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-xl text-gray-700"
+                  >
+                    <option value="">All Crops</option>
+                    {filterOptions.crops.map(crop => (
+                      <option key={crop.value} value={crop.value}>{crop.label}</option>
+                    ))}
+                  </select>
                 </div>
-              )}
+
+                {/* Purpose */}
+                <div>
+                  <label className="text-gray-700 font-medium mb-2 block">Purpose</label>
+                  <select
+                    value={filters.purpose}
+                    onChange={(e) => setFilters(prev => ({ ...prev, purpose: e.target.value }))}
+                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-xl text-gray-700"
+                  >
+                    <option value="">All Purposes</option>
+                    {filterOptions.purposes.map(p => (
+                      <option key={p.value} value={p.value}>{p.label}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Category */}
+                <div>
+                  <label className="text-gray-700 font-medium mb-2 block">Category</label>
+                  <select
+                    value={filters.category}
+                    onChange={(e) => setFilters(prev => ({ ...prev, category: e.target.value }))}
+                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-xl text-gray-700"
+                  >
+                    <option value="">All Categories</option>
+                    {filterOptions.categories.map(c => (
+                      <option key={c.value} value={c.value}>{c.label}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Brand */}
+                <div>
+                  <label className="text-gray-700 font-medium mb-2 block">Brand Type</label>
+                  <select
+                    value={filters.brandType}
+                    onChange={(e) => setFilters(prev => ({ ...prev, brandType: e.target.value }))}
+                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-xl text-gray-700"
+                  >
+                    <option value="">All Brands</option>
+                    {filterOptions.brandTypes.map(b => (
+                      <option key={b.value} value={b.value}>{b.label}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
             </div>
           )}
 
+        </div>
+      )}
+
+      {/* Products Grid */}
+      <div className="min-h-[500px]">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          
+          {loading ? (
+            <div className="col-span-full flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-500"></div>
+            </div>
+          ) : (
+            filteredFertilizers.map(fertilizer => (
+              <FertilizerCard
+                key={fertilizer.id}
+                fertilizer={fertilizer}
+              />
+            ))
+          )}
+
+          {!loading && filteredFertilizers.length === 0 && (
+            <div className="col-span-full text-center py-12 bg-white border border-gray-300 rounded-2xl shadow-sm">
+              <Filter size={48} className="text-gray-400 mx-auto mb-4" />
+              <p className="text-gray-700 text-lg mb-2">
+                No products found
+              </p>
+              <p className="text-gray-500 text-sm">Try adjusting filters or search</p>
+            </div>
+          )}
 
         </div>
       </div>
 
-      {showChat && <ChatBox onClose={() => setShowChat(false)} />}
     </div>
-  );
+
+    {showChat && <ChatBox onClose={() => setShowChat(false)} />}
+  </div>
+);
+
 }

@@ -15,7 +15,7 @@ export default function useFertilizers(filters = {}) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let q = query(collection(db, 'fertilizers'), where('quantity', '>', 0));
+    let q = query(collection(db, 'fertilizers'), where('stock', '>', 0));
 
     if (filters.cropType) {
       q = query(q, where('suitableCrops', 'array-contains', filters.cropType));
